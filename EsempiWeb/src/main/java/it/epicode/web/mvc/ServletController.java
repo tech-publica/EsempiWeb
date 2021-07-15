@@ -23,7 +23,6 @@ public class ServletController extends HttpServlet {
 			throws ServletException, IOException {
 		PrintWriter pw = response.getWriter();
 		String path = request.getRequestURI();
-		System.out.println(path);
 		int slash = path.lastIndexOf('/');
 		String action = path.substring(slash + 1, path.length() - 3);
 		String destination = "";
@@ -35,9 +34,24 @@ public class ServletController extends HttpServlet {
 				destination = controller.inserisciImpiegato(request, response);
 			}
 				break;
+			case "updateimpiegato": {
+				ImpiegatoController controller = new ImpiegatoController(new ImpiegatoRepository());
+				destination = controller.updateImpiegato(request, response);
+			}
+				break;
 			case "listaimpiegati": {
 				ImpiegatoController controller = new ImpiegatoController(new ImpiegatoRepository());
 				destination = controller.listaImpiegati(request, response);
+			}
+				break;
+			case "mostraformaggiuntaimpiegato": {		
+				destination = "aggiungiImpiegato.jsp";
+			}
+				break;
+			case "mostraformupdateimpiegato": {		
+				ImpiegatoController controller = new ImpiegatoController(new ImpiegatoRepository());
+				
+				destination = controller.caricaImpiegato(request, response);
 			}
 				break;
 			default: {

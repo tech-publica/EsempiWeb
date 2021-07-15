@@ -39,4 +39,25 @@ public class ImpiegatoController {
 		return "listaImpiegati.jsp";
 	}
 
+	public String caricaImpiegato(HttpServletRequest request, HttpServletResponse response) throws DataException {
+		long id = Long.parseLong(request.getParameter("id"));
+		Impiegato imp = repo.findById(id)
+				.orElseThrow(() -> new DataException("impiegato con id "  + id + " inesistente", null));
+		request.setAttribute("toUpdate", imp);
+		System.out.println("inserito impiegato con chiave toUpdate");
+		return "aggiungiImpiegato.jsp";
+	}
+
+	public String updateImpiegato(HttpServletRequest request, HttpServletResponse response) throws DataException {
+		String idString = request.getParameter("id");
+		long id = Long.parseLong(idString);
+		String firstname = request.getParameter("firstname");
+		String lastname = request.getParameter("lastname");
+		String role = request.getParameter("role");
+		
+		Impiegato imp = new Impiegato(id, firstname, lastname, role);
+		repo.updateImpiegato(imp);
+		return "confermaInserimentoImpiegato.jsp";
+	}
+
 }
