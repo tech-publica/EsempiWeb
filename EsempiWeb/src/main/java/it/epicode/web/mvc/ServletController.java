@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import it.epicode.web.mvc.controllers.BaseController;
+import it.epicode.web.mvc.controllers.Destination;
 import it.epicode.web.mvc.controllers.ImpiegatoController;
 import it.epicode.web.mvc.model.data.DataException;
 import it.epicode.web.mvc.model.data.ImpiegatoRepository;
@@ -25,7 +26,7 @@ public class ServletController extends HttpServlet {
 		String path = request.getRequestURI();
 		int slash = path.lastIndexOf('/');
 		String action = path.substring(slash + 1, path.length() - 3);
-		String destination = "";
+		Destination destination = null;
 		try {
 
 			switch (action.toLowerCase()) {
@@ -45,7 +46,7 @@ public class ServletController extends HttpServlet {
 			}
 				break;
 			case "mostraformaggiuntaimpiegato": {		
-				destination = "aggiungiImpiegato.jsp";
+				destination = new Destination("aggiungiImpiegato.jsp", false);
 			}
 				break;
 			case "mostraformupdateimpiegato": {		
@@ -62,11 +63,16 @@ public class ServletController extends HttpServlet {
 			}
 		} catch (DataException de) {
 			request.setAttribute("EXCEPTION", de);
-			destination = "dataConnectionError.jsp";
+			destination = new Destination("dataConnectionError.jsp", false);
 		}
 
-		RequestDispatcher dispatcher = request.getRequestDispatcher(destination);
-		dispatcher.forward(request, response);
+		if(destination.isRedirect()) {
+			response.sendRedirect(destination.getUrl());
+			
+		} else {
+			RequestDispatcher dispatcher = request.getRequestDispatcher(destination.getUrl());
+			dispatcher.forward(request, response);
+		}	
 
 	}
 
